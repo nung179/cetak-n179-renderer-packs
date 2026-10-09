@@ -2,13 +2,13 @@
   "schema_version": 1,
   "catalog_id": "org.n179.renderer.public.v1",
   "product": "Cetak n179",
-  "channel": "stable",
+  "channel": "beta",
   "published_date": "2026-10-09",
-  "catalog_status": "NO_PUBLISHED_PACKS",
-  "core_note": "R113A v0.1.103 (105): metadata only, no executable on-demand loader verified yet",
+  "catalog_status": "BETA_TEST_ONLY",
+  "core_note": "R116 beta: CORE memiliki parser OOXML dasar, pack berupa profil DATA; BUKAN Office full fidelity. Periksa tes HP sebelum produksi.",
   "security": {
     "distribution_host": "github.com",
-    "signature_mode": "NOT_CONFIGURED",
+    "signature_mode": "SHA256_PINNED_IN_APK",
     "trusted_key_id": null
   },
   "families": [
@@ -20,9 +20,18 @@
         "odt",
         "rtf"
       ],
-      "verified_extensions": [],
-      "status": "NOT_AVAILABLE",
-      "release": null
+      "verified_extensions": [
+        "docx"
+      ],
+      "status": "BETA_STAGING_NOT_VERIFIED_ON_PHONE",
+      "release": {
+        "tag": "beta-v0.1.0",
+        "asset": "renderer-document-v0.1.0-beta.1.n179r",
+        "url": "https://github.com/nung179/cetak-n179-renderer-packs/releases/download/beta-v0.1.0/renderer-document-v0.1.0-beta.1.n179r",
+        "sha256": "edc2d7b64c8e27bc6cbf37ca4b212aff1118ffc5dfb9fd7dc8d57666f0dda50b",
+        "size_bytes": 594,
+        "fidelity": "LIMITED"
+      }
     },
     {
       "id": "presentation",
@@ -31,9 +40,18 @@
         "pptx",
         "odp"
       ],
-      "verified_extensions": [],
-      "status": "NOT_AVAILABLE",
-      "release": null
+      "verified_extensions": [
+        "pptx"
+      ],
+      "status": "BETA_STAGING_NOT_VERIFIED_ON_PHONE",
+      "release": {
+        "tag": "beta-v0.1.0",
+        "asset": "renderer-presentation-v0.1.0-beta.1.n179r",
+        "url": "https://github.com/nung179/cetak-n179-renderer-packs/releases/download/beta-v0.1.0/renderer-presentation-v0.1.0-beta.1.n179r",
+        "sha256": "213037b69855b45a4544b9b10bcc8d42b95222e9b44b02bcb1e9cbc661eeea55",
+        "size_bytes": 596,
+        "fidelity": "LIMITED"
+      }
     },
     {
       "id": "spreadsheet",
@@ -43,9 +61,18 @@
         "ods",
         "csv"
       ],
-      "verified_extensions": [],
-      "status": "NOT_AVAILABLE",
-      "release": null
+      "verified_extensions": [
+        "xlsx"
+      ],
+      "status": "BETA_STAGING_NOT_VERIFIED_ON_PHONE",
+      "release": {
+        "tag": "beta-v0.1.0",
+        "asset": "renderer-spreadsheet-v0.1.0-beta.1.n179r",
+        "url": "https://github.com/nung179/cetak-n179-renderer-packs/releases/download/beta-v0.1.0/renderer-spreadsheet-v0.1.0-beta.1.n179r",
+        "sha256": "03803bba06a22a0d6f0c6c6e38df6a5e71b5181f36615df8a3ff31bf00ff0b85",
+        "size_bytes": 596,
+        "fidelity": "LIMITED"
+      }
     }
   ]
 }

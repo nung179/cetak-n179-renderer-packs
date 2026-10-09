@@ -17,11 +17,11 @@ def validate(data):
     errors = []
     if data.get('schema_version') != 1: errors.append('schema_version harus 1')
     if data.get('catalog_id') != 'org.n179.renderer.public.v1': errors.append('catalog_id salah')
-    if data.get('channel') != 'stable': errors.append('channel belum didukung')
+    if data.get('channel') not in ('stable', 'beta'): errors.append('channel belum didukung')
     security = data.get('security', {})
     if not isinstance(security, dict): security = {}; errors.append('security bukan object')
     mode = security.get('signature_mode')
-    if mode not in ('NOT_CONFIGURED', 'ED25519_PINNED_V1'): errors.append('signature_mode tak dikenal')
+    if mode not in ('NOT_CONFIGURED', 'ED25519_PINNED_V1', 'SHA256_PINNED_IN_APK'): errors.append('signature_mode tak dikenal')
     if security.get('distribution_host') != 'github.com': errors.append('host tak dikenal')
     if mode == 'ED25519_PINNED_V1' and not security.get('trusted_key_id'):
         errors.append('pinned signing key id wajib')
@@ -30,6 +30,7 @@ def validate(data):
     ids = [f.get('id') for f in families if isinstance(f, dict)]
     if len(ids) != 3 or set(ids) != FAMILIES: errors.append('wajib tepat 3 family id unik')
     active = 0
+    beta = 0
     for family in families:
         if not isinstance(family, dict): errors.append('family bukan object'); continue
         fid = family.get('id')
@@ -43,13 +44,30 @@ def validate(data):
         if not set(verified).issubset(set(planned)):
             errors.append(f'{fid}: verified_extensions bukan subset planned')
         status, rel = family.get('status'), family.get('release')
-        if status not in ('NOT_AVAILABLE', 'AVAILABLE', 'BLOCKED'):
+        if status not in ('NOT_AVAILABLE', 'AVAILABLE', 'BLOCKED', 'BETA_STAGING_NOT_VERIFIED_ON_PHONE'):
             errors.append(f'{fid}: status salah'); continue
         if status == 'NOT_AVAILABLE':
             if rel is not None or verified: errors.append(f'{fid}: NOT_AVAILABLE harus release null dan verified kosong')
             continue
         if status == 'BLOCKED':
             if not family.get('reason'): errors.append(f'{fid}: BLOCKED harus punya alasan')
+            continue
+        if status == 'BETA_STAGING_NOT_VERIFIED_ON_PHONE':
+            beta += 1
+            if mode != 'SHA256_PINNED_IN_APK': errors.append(f'{fid}: BETA memerlukan pin SHA APK')
+            if data.get('channel') != 'beta': errors.append(f'{fid}: BETA hanya channel beta')
+            if not verified: errors.append(f'{fid}: BETA wajib menyebut extension LIMITED')
+            if not isinstance(rel, dict): errors.append(f'{fid}: release metadata wajib'); continue
+            name = rel.get('asset', '')
+            if name != f'renderer-{fid}-v0.1.0-beta.1.n179r': errors.append(f'{fid}: nama asset beta salah')
+            p = urlparse(rel.get('url', ''))
+            expected=f'/nung179/cetak-n179-renderer-packs/releases/download/beta-v0.1.0/{name}'
+            if p.scheme != 'https' or p.netloc != 'github.com' or p.path != expected or p.query or p.fragment:
+                errors.append(f'{fid}: URL beta tidak aman')
+            if rel.get('fidelity') != 'LIMITED': errors.append(f'{fid}: fidelity beta harus LIMITED')
+            if not SHA.fullmatch(rel.get('sha256','')): errors.append(f'{fid}: SHA256 invalid')
+            if not isinstance(rel.get('size_bytes'),int) or rel.get('size_bytes', 0) <= 0:
+                errors.append(f'{fid}: size bytes invalid')
             continue
         active += 1
         if mode != 'ED25519_PINNED_V1': errors.append(f'{fid}: AVAILABLE dilarang tanpa signature mode dan pinned key')
@@ -70,7 +88,7 @@ def validate(data):
             errors.append(f'{fid}: signature/pinned key wajib dan cocok')
         if not isinstance(rel.get('compatibility'),dict) or not rel['compatibility'].get('min_core_version'):
             errors.append(f'{fid}: compatibility wajib')
-    expected = 'PACKS_PUBLISHED' if active else 'NO_PUBLISHED_PACKS'
+    expected = 'PACKS_PUBLISHED' if active else 'BETA_TEST_ONLY' if beta else 'NO_PUBLISHED_PACKS'
     if data.get('catalog_status') != expected: errors.append('catalog_status tidak sesuai ketersediaan')
     return errors
 

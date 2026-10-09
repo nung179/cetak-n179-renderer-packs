@@ -27,7 +27,7 @@ class RendererRepositoryTests(unittest.TestCase):
         self.assertTrue(validate(self.data))
 
     def test_cannot_claim_formats_as_verified_if_unavailable(self):
-        self.data['families'][0]['verified_extensions']=['docx']
+        self.data['families'][0]['status']='NOT_AVAILABLE'
         self.assertTrue(validate(self.data))
 
     def test_candidate_release_url_requires_known_origin(self):
@@ -75,5 +75,18 @@ class RendererRepositoryTests(unittest.TestCase):
         p=self._pack(bad_path='payload/test.apk')
         try:self.assertTrue(any('dilarang' in e for e in validate_pack(p)))
         finally:p.unlink()
+
+
+class RendererBetaExtraTests(unittest.TestCase):
+    def setUp(self):
+        self.data=json.loads((ROOT/'catalog'/'renderer-index.json').read_text(encoding='utf-8'))
+    def test_beta_catalog_pinned_urls(self):
+        self.assertEqual(validate(self.data), [])
+    def test_block_arbitrary_download_host(self):
+        self.data['families'][0]['release']['url']='https://evil.example/a.n179r'
+        self.assertTrue(any('URL beta tidak aman' in x for x in validate(self.data)))
+    def test_beta_cannot_pretend_native(self):
+        self.data['families'][0]['release']['fidelity']='NATIVE'
+        self.assertTrue(validate(self.data))
 
 if __name__=='__main__':unittest.main()
