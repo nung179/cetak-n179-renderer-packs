@@ -1,0 +1,21 @@
+# Artefak besar diterbitkan sebagai GitHub Releases, bukan di Git tree
+*.apk
+*.aab
+*.zip
+*.aar
+*.dex
+*.jar
+*.so
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+__pycache__/
+.pytest_cache/
+*.pyc
+.DS_Store
+Thumbs.db

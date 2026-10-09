@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "catalog_id": "org.n179.renderer.public.v1",
+  "product": "Cetak n179",
+  "channel": "stable",
+  "published_date": "2026-10-09",
+  "catalog_status": "NO_PUBLISHED_PACKS",
+  "core_note": "R113A v0.1.103 (105): metadata only, no executable on-demand loader verified yet",
+  "security": {
+    "distribution_host": "github.com",
+    "signature_mode": "NOT_CONFIGURED",
+    "trusted_key_id": null
+  },
+  "families": [
+    {
+      "id": "document",
+      "planned_extensions": [
+        "doc",
+        "docx",
+        "odt",
+        "rtf"
+      ],
+      "verified_extensions": [],
+      "status": "NOT_AVAILABLE",
+      "release": null
+    },
+    {
+      "id": "presentation",
+      "planned_extensions": [
+        "ppt",
+        "pptx",
+        "odp"
+      ],
+      "verified_extensions": [],
+      "status": "NOT_AVAILABLE",
+      "release": null
+    },
+    {
+      "id": "spreadsheet",
+      "planned_extensions": [
+        "xls",
+        "xlsx",
+        "ods",
+        "csv"
+      ],
+      "verified_extensions": [],
+      "status": "NOT_AVAILABLE",
+      "release": null
+    }
+  ]
+}
